@@ -1,0 +1,19 @@
+/* Transições suaves e ajustes visuais para hover e overlay */
+.car-card {
+    transition: all 0.3s ease;
+}
+
+.car-card:hover .car-overlay {
+    opacity: 1;
+}
+
+.car-overlay {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: linear-gradient(to top, rgba(2, 6, 23, 0.9) 0%, rgba(2, 6, 23, 0.4) 60%, transparent 100%);
+}
+
+/* Suavizar rolagem */
+html {
+    scroll-behavior: smooth;
+}

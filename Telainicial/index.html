@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Garagem & Produtos</title>
+    <!-- Tailwind CSS -->
+    <Script src="https://cdn.tailwindcss.com"></Script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Arquivo de Estilos Personalizados -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+
+    <!-- Header / Cabeçalho -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-cyan-500/10 p-2.5 rounded-xl border border-cyan-500/20 text-cyan-400">
+                    <i class="fa-solid fa-car-rear text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white">Garagem Ramos</h1>
+                    <p class="text-xs text-slate-400">Carros, modificações e produtos de limpeza</p>
+                </div>
+            </div>
+
+            <!-- Abas de Navegação -->
+            <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800">
+                <button onclick="switchTab('cars')" id="tab-cars" class="px-4 py-2 rounded-lg text-sm font-medium transition bg-cyan-500 text-slate-950">
+                    <i class="fa-solid fa-car mr-2"></i> Carros & Peças
+                </button>
+                <button onclick="switchTab('cleaning')" id="tab-cleaning" class="px-4 py-2 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-spray-can-sparkles mr-2"></i> Produtos de Limpeza
+                </button>
+            </div>
+
+            <!-- Botão Admin -->
+            <div>
+                <button id="admin-toggle-btn" onclick="toggleAdminModal()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-lg border border-slate-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-lock" id="admin-icon"></i> <span id="admin-btn-text">Área Admin</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Banner Modo Admin Ativo -->
+    <div id="admin-banner" class="hidden bg-cyan-950/40 border-b border-cyan-800/50 py-2 px-4 text-center text-xs text-cyan-300 flex justify-center items-center gap-3">
+        <span><i class="fa-solid fa-shield-halved mr-1"></i> Modo Administrador Ativo (Adição e exclusão liberadas)</span>
+        <button onclick="logoutAdmin()" class="underline font-semibold hover:text-white">Sair</button>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
+
+        <!-- SEÇÃO 1: CARROS & PEÇAS -->
+        <div id="section-cars" class="space-y-12">
+            <!-- Cabeçalho da Seção -->
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-white">Meus Carros</h2>
+                    <p class="text-sm text-slate-400">Clique em um carro para ver as peças e onde foram compradas</p>
+                </div>
+                <button onclick="openCarModal()" class="admin-only hidden bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Novo Carro
+                </button>
+            </div>
+
+            <!-- Grade de Carros (Cards Clicáveis com Hover) -->
+            <div id="cars-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Preenchido via JS -->
+            </div>
+
+<!-- Detalhes do Carro Selecionado & Peças (Adicione a classe 'hidden' aqui) -->
+<div id="car-details-container" class="hidden pt-6 border-t border-slate-800">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div>
+            <span class="text-xs uppercase tracking-wider text-cyan-400 font-semibold">Veículo Selecionado</span>
+            <h3 id="selected-car-title" class="text-3xl font-extrabold text-white"></h3>
+        </div>
+        <button onclick="openPartModal()" class="admin-only hidden bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-cyan-500/30 px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center gap-2">
+            <i class="fa-solid fa-wrench"></i> Cadastrar Peça
+        </button>
+    </div>
+
+    <!-- Lista de Peças -->
+    <div id="parts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Preenchido via JS -->
+    </div>
+</div>
+        </div>
+
+        <!-- SEÇÃO 2: PRODUTOS DE LIMPEZA -->
+        <div id="section-cleaning" class="space-y-6 hidden">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-white">Produtos de Limpeza & Detailing</h2>
+                    <p class="text-sm text-slate-400">Shampoos, ceras, aplicadores e onde adquirir</p>
+                </div>
+                <button onclick="openCleaningModal()" class="admin-only hidden bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold px-4 py-2 rounded-xl text-sm transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Novo Produto
+                </button>
+            </div>
+
+            <!-- Grade de Produtos de Limpeza -->
+            <div id="cleaning-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Preenchido via JS -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-6 text-center text-xs text-slate-500">
+        <p>Minha Garagem Pessoal &copy; 2026 - Desenvolvido para controle de peças e compras.</p>
+    </footer>
+
+    <!-- MODAL SENHA ADMIN -->
+    <div id="password-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white">Acesso Restrito</h3>
+                <button onclick="closePasswordModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-xs text-slate-400">Digite a senha de administrador para liberar os cadastros:</p>
+            <input type="password" id="admin-password-input" placeholder="Senha (padrão: admin123)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closePasswordModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
+                <button onclick="verifyPassword()" class="px-4 py-2 rounded-xl text-xs bg-cyan-500 text-slate-950 font-bold hover:bg-cyan-400">Entrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL NOVO CARRO -->
+    <div id="car-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white">Adicionar Novo Carro</h3>
+                <button onclick="closeCarModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Nome / Modelo do Carro</label>
+                    <input type="text" id="car-name" placeholder="Ex: Honda Civic Si" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Link da Foto (URL)</label>
+                    <input type="text" id="car-image" placeholder="https://exemplo.com/foto.jpg" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Ano / Detalhes (Opcional)</label>
+                    <input type="text" id="car-year" placeholder="Ex: 2008 / Aspirado" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeCarModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
+                <button onclick="saveCar()" class="px-4 py-2 rounded-xl text-xs bg-cyan-500 text-slate-950 font-bold hover:bg-cyan-400">Salvar Carro</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL NOVA PEÇA -->
+    <div id="part-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white">Cadastrar Peça</h3>
+                <button onclick="closePartModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Nome da Peça</label>
+                    <input type="text" id="part-name" placeholder="Ex: Amortecedor Bilstein" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Link da Foto da Peça</label>
+                    <input type="text" id="part-image" placeholder="https://exemplo.com/penca.jpg" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Onde Comprou (Nome da Loja / Vendedor)</label>
+                    <input type="text" id="part-store-name" placeholder="Ex: Mercado Livre / Loja X" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Link da Loja / Onde Comprar (URL)</label>
+                    <input type="text" id="part-store-link" placeholder="https://mercadolivre.com.br/..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Observações (Opcional)</label>
+                    <input type="text" id="part-notes" placeholder="Ex: Versão esportiva importada" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closePartModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
+                <button onclick="savePart()" class="px-4 py-2 rounded-xl text-xs bg-cyan-500 text-slate-950 font-bold hover:bg-cyan-400">Salvar Peça</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL NOVO PRODUTO DE LIMPEZA -->
+    <div id="cleaning-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white">Cadastrar Produto de Limpeza</h3>
+                <button onclick="closeCleaningModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Nome do Produto</label>
+                    <input type="text" id="clean-name" placeholder="Ex: Vonixx Strike / Shampoo Snow Foam" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Link da Foto</label>
+                    <input type="text" id="clean-image" placeholder="https://exemplo.com/produto.jpg" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Onde Comprou (Loja)</label>
+                    <input type="text" id="clean-store-name" placeholder="Ex: Loja Detailing Brasil" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Link da Loja (URL)</label>
+                    <input type="text" id="clean-store-link" placeholder="https://site.com/produto" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Observações (Opcional)</label>
+                    <input type="text" id="clean-store-notes" placeholder="Ex: Versão esportiva importada" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+                </div>
+<div>
+                    <label class="block text-xs text-slate-400 mb-1">Observações (Opcional)</label>
+                    <input type="text" id="clean-notes" placeholder="Ex: Diluição 1:10" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeCleaningModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-800 text-slate-300 hover:bg-slate-700">Cancelar</button>
+                <button onclick="saveCleaningProduct()" class="px-4 py-2 rounded-xl text-xs bg-cyan-500 text-slate-950 font-bold hover:bg-cyan-400">Salvar Produto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Arquivo de Script JavaScript -->
+    <Script src="Script.js"></Script>
+</body>
+</html>
